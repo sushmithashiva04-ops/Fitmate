@@ -106,6 +106,8 @@ jobs:
           EC2_IP: ${{ env.EC2_IP }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          
         working-directory: infra/ansible
         run: |
           mkdir -p ~/.ssh
@@ -118,4 +120,5 @@ jobs:
           ansible-playbook -i inventory.ini deploy.yml \
             -e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
             -e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
+            -e "dockerhub_password=${DOCKERHUB_PASSWORD}" \
             -e "dockerhub_username=${DOCKERHUB_USERNAME}"
