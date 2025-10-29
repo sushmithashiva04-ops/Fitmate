@@ -20,10 +20,11 @@ jobs:
           aws-region: ap-south-1
 
       - name: Retrieve GitHub PAT from AWS Secrets Manager
-        id: get-pat
+        id: secrets
         run: |
-          PAT=$(aws secretsmanager get-secret-value --secret-id github/pat --query SecretString --output text | jq -r '.token')
+          PAT=$(aws secretsmanager get-secret-value --secret-id github/pat --region us-east-2 --query SecretString --output text | jq -r '.token')
           echo "PAT=$PAT" >> $GITHUB_ENV
+
 
       - name: Checkout infra repo
         uses: actions/checkout@v4
