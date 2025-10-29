@@ -1,0 +1,55 @@
+name: Deploy FitMate
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout app repo
+        uses: actions/checkout@v4
+
+      - name: Checkout infra repo
+        uses: actions/checkout@v4
+        with:
+          repository: yourusername/infra-deployment
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: infra
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init & Apply
+        working-directory: infra/terraform
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Get EC2 Public IP
+        id: ec2
+        working-directory: infra/terraform
+        run: echo "EC2_IP=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
+
+      - name: Install Ansible
+        run: sudo apt-get update && sudo apt-get install -y ansible
+
+      - name: Run Ansible playbook
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EC2_IP: ${{ env.EC2_IP }}
+        working-directory: infra/ansible
+        run: |
+          echo "[fitmate]" > inventory.ini
+          echo "${EC2_IP} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/your-key.pem" >> inventory.ini
+          ansible-playbook -i inventory.ini deploy.yml
