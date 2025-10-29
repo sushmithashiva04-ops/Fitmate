@@ -45,12 +45,13 @@ jobs:
           terraform init -input=false
           terraform apply -auto-approve -input=false
 
-      - name: Get EC2 Public IP
-        id: ec2
-        working-directory: infra/terraform
-        run: |
-          echo "EC2_IP=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
-          echo "Public IP: $EC2_IP"
+            - name: Get EC2 Public IP
+              id: ec2
+              working-directory: infra/terraform
+              run: |
+                EC2_IP=$(terraform output -raw ec2_public_ip)
+                echo "EC2_IP=$EC2_IP" >> $GITHUB_ENV
+                echo "✅ Public IP from Terraform: $EC2_IP"
 
       - name: Install Ansible
         run: |
