@@ -1,0 +1,103 @@
+/* Overall layout */
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #0b0f17 0%, #0f1522 80%);
+  font-family: "Poppins", sans-serif;
+  color: #e5e5e5;
+}
+
+/* Form container */
+form {
+  background: rgba(18, 22, 33, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 255, 198, 0.15);
+  box-shadow: 0 0 25px rgba(0, 255, 198, 0.08);
+  width: 400px;
+  padding: 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+form:hover {
+  box-shadow: 0 0 35px rgba(0, 255, 198, 0.2);
+  transform: translateY(-3px);
+}
+
+/* Header */
+h2 {
+  text-align: center;
+  color: #00ffc6;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 8px rgba(0, 255, 198, 0.4);
+}
+
+/* Label + Inputs */
+label {
+  font-size: 0.95rem;
+  color: #b8b8b8;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(20, 25, 35, 0.85);
+  border: 1px solid rgba(0, 255, 198, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  border-color: #00ffc6;
+  box-shadow: 0 0 10px rgba(0, 255, 198, 0.3);
+}
+
+/* Button */
+button {
+  background: linear-gradient(135deg, #00ffc6, #008b8b);
+  color: #0b0f17;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 198, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Error message */
+p[style] {
+  text-align: center;
+  margin-top: 1rem;
+  color: #ff4b4b !important;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  form {
+    width: 90%;
+    padding: 2rem 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+}

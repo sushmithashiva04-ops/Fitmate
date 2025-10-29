@@ -1,0 +1,44 @@
+<!-- Top Navbar -->
+<div class="navbar">
+  <div class="logo">FitMate</div>
+  <div class="nav-actions">
+    <button (click)="navigateToProfile()">Profile</button>
+    <button (click)="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- Page Layout -->
+<div class="page-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <ul>
+      <!-- <li><a routerLink="dashboard" routerLinkActive="active">Dashboard</a></li> -->
+      <!-- <li><a routerLink="workout" routerLinkActive="active">Workout</a></li> -->
+
+      <ng-container *ngIf="userRole === 'USER'">
+        <li>
+          <a routerLink="dashboard" routerLinkActive="active">Dashboard</a>
+        </li>
+        <li><a routerLink="workout" routerLinkActive="active">Workout</a></li>
+        <li><a routerLink="calendar" routerLinkActive="active">Calendar</a></li>
+      </ng-container>
+      <ng-container *ngIf="userRole === 'ADMIN'">
+        <li>
+          <a routerLink="/AdminDashboard" routerLinkActive="active"
+            >Dashboard</a
+          >
+        </li>
+        <li>
+          <a routerLink="/Admin" routerLinkActive="active"
+            >Workout & Exercise</a
+          >
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

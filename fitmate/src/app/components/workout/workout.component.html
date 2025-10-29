@@ -1,0 +1,197 @@
+<div class="workout-container">
+  <!-- 🔹 Add/Edit Floating Modal -->
+  <div class="modal-overlay" *ngIf="showAddForm">
+    <div class="modal-content">
+      <h3>{{ isEditMode ? "Edit Workout" : "Add New Workout" }}</h3>
+
+      <div class="form-group">
+        <label>Type:</label>
+        <input [(ngModel)]="newWorkout.type" placeholder="Workout type" />
+      </div>
+
+      <div class="form-group">
+        <label>Name:</label>
+        <input [(ngModel)]="newWorkout.name" placeholder="Workout name" />
+      </div>
+
+      <div class="form-group">
+        <label>Duration (min):</label>
+        <input type="number" [(ngModel)]="newWorkout.duration" />
+      </div>
+
+      <div class="form-group">
+        <label>Scheduled Date:</label>
+        <input type="date" [(ngModel)]="newWorkout.scheduledDate" />
+      </div>
+
+      <!-- Exercise Blocks -->
+      <div
+        *ngFor="let exercise of newWorkout.exercises; let i = index"
+        class="exercise-block"
+      >
+        <div class="exercise-header">
+          <strong>Exercise {{ i + 1 }}</strong>
+          <button class="remove-ex" (click)="removeExerciseBlock(i)">✖</button>
+        </div>
+
+        <select [(ngModel)]="exercise.exerciseName">
+          <option value="">Select exercise</option>
+          <option *ngFor="let e of staticExercises" [value]="e">{{ e }}</option>
+        </select>
+
+        <input [(ngModel)]="exercise.sets" placeholder="Sets" type="number" />
+        <input [(ngModel)]="exercise.reps" placeholder="Reps" type="number" />
+        <input
+          [(ngModel)]="exercise.weight"
+          placeholder="Weight (kg)"
+          type="number"
+        />
+      </div>
+
+      <button class="add-exercise" (click)="addExerciseBlock()">
+        + Add Exercise
+      </button>
+
+      <div class="form-actions">
+        <button class="save-btn" (click)="saveWorkout()">Save</button>
+        <button class="cancel-btn" (click)="cancelForm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 Add Workout Button -->
+  <button class="add-btn" (click)="openAddForm()">+ Add Workout</button>
+
+  <!-- 🔹 Active Session -->
+  <section>
+    <h2>Active Session</h2>
+    <div class="workout-list">
+      <div *ngFor="let workout of todayWorkouts" class="workout-card">
+        <h3>{{ workout.name }}</h3>
+        <p>Type: {{ workout.type }}</p>
+        <p>Status: {{ workout.status }}</p>
+        <p>Scheduled: {{ workout.scheduledDate | date }}</p>
+
+        <div class="exercise-grid">
+          <div *ngFor="let ex of workout.exercises" class="exercise-card">
+            <img
+              [src]="
+                ex.imageUrl && ex.imageUrl !== 'No image available'
+                  ? ex.imageUrl
+                  : 'assets/no-image.png'
+              "
+              alt="exercise"
+            />
+            <div class="exercise-info">
+              <p class="exercise-name">{{ ex.exerciseName }}</p>
+              <small>{{ ex.sets }}x{{ ex.reps }} &#64; {{ ex.weight }}kg</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button
+            [disabled]="workout.completed"
+            (click)="openCaloriePopup(workout)"
+          >
+            {{ workout.completed ? "Completed" : "Mark Complete" }}
+          </button>
+          <button
+            (click)="removeWorkout(workout.id)"
+            *ngIf="!workout.completed"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔹 Calorie Input Popup -->
+  <div class="popup-overlay" *ngIf="showCaloriePopup">
+    <div class="popup-content">
+      <h4>Enter Calories Burned</h4>
+      <input type="number" [(ngModel)]="calorieInput" placeholder="Calories" />
+      <div class="popup-actions">
+        <button (click)="confirmCalories()">OK</button>
+        <button (click)="closeCaloriePopup()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 Admin Workouts -->
+  <section>
+    <h2>Admin Workouts</h2>
+    <div class="workout-list">
+      <div *ngFor="let workout of adminWorkouts" class="workout-card">
+        <h3>{{ workout.name }}</h3>
+        <p>Type: {{ workout.type }}</p>
+        <p>Status: {{ workout.status }}</p>
+        <p>Scheduled: {{ workout.scheduledDate | date }}</p>
+
+        <div class="exercise-grid">
+          <div *ngFor="let ex of workout.exercises" class="exercise-card">
+            <img
+              [src]="
+                ex.imageUrl && ex.imageUrl !== 'No image available'
+                  ? ex.imageUrl
+                  : 'assets/no-image.png'
+              "
+              alt="exercise"
+            />
+            <div class="exercise-info">
+              <p class="exercise-name">{{ ex.exerciseName }}</p>
+              <small>{{ ex.sets }}x{{ ex.reps }} &#64; {{ ex.weight }}kg</small>
+            </div>
+          </div>
+        </div>
+
+        <button class="primary-btn" (click)="rescheduleWorkout(workout.id)">
+          Add to Today
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔹 User Workouts -->
+  <section>
+    <h2>Your Workouts</h2>
+    <div class="workout-list">
+      <div *ngFor="let workout of userWorkouts" class="workout-card">
+        <h3>{{ workout.name }}</h3>
+        <p>Type: {{ workout.type }}</p>
+        <p>Status: {{ workout.status }}</p>
+        <p>Scheduled: {{ workout.scheduledDate | date }}</p>
+
+        <div class="exercise-grid">
+          <div *ngFor="let ex of workout.exercises" class="exercise-card">
+            <img
+              [src]="
+                ex.imageUrl && ex.imageUrl !== 'No image available'
+                  ? ex.imageUrl
+                  : 'assets/no-image.png'
+              "
+              alt="exercise"
+            />
+            <div class="exercise-info">
+              <p class="exercise-name">{{ ex.exerciseName }}</p>
+              <small>{{ ex.sets }}x{{ ex.reps }} &#64; {{ ex.weight }}kg</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button (click)="editWorkout(workout)" *ngIf="!workout.completed">
+            Edit
+          </button>
+          <button
+            (click)="deleteWorkout(workout.id)"
+            *ngIf="!workout.completed"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

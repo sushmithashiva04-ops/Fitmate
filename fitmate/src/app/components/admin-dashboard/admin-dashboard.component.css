@@ -1,0 +1,134 @@
+/* =============================
+   ADMIN DASHBOARD (Dark · Elegant · Modern)
+   ============================= */
+
+:host {
+  display: block;
+  background: radial-gradient(
+      circle at 25% 10%,
+      rgba(114, 137, 218, 0.15),
+      transparent 25%
+    ),
+    radial-gradient(circle at 80% 90%, rgba(0, 255, 198, 0.1), transparent 25%),
+    #0b0f17;
+  color: #e6ecf5;
+  font-family: "Poppins", "Inter", sans-serif;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+/* ===== HEADING ===== */
+.dashboard-container h1 {
+  font-size: 2.4rem;
+  color: #00ffc6;
+  margin-bottom: 30px;
+  text-align: center;
+  font-weight: 600;
+  text-shadow: 0 0 12px rgba(0, 255, 198, 0.35);
+  letter-spacing: -0.02em;
+}
+
+/* ===== LOADING & ERROR STATES ===== */
+.loading,
+.error {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px 40px;
+  display: inline-block;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.error {
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+/* ===== CARD GRID ===== */
+.cards {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* ===== CARD DESIGN ===== */
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 28px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+/* Glow effect */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #00ffc6, #7289da);
+  transition: width 0.4s ease;
+}
+.card:hover::before {
+  width: 100%;
+}
+
+/* Hover lift */
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Card Headings */
+.card h2 {
+  font-size: 1.2rem;
+  color: #e6ecf5;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* Card Values */
+.value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #00ffc6;
+}
+
+/* Card Variants */
+.card.total {
+  border-left: 3px solid #00ffc6;
+}
+.card.scheduled {
+  border-left: 3px solid #7289da;
+}
+.card.completion {
+  border-left: 3px solid #41e29a;
+}
+
+/* ===== RESPONSIVENESS ===== */
+@media (max-width: 768px) {
+  :host {
+    padding: 20px;
+  }
+
+  .dashboard-container h1 {
+    font-size: 2rem;
+  }
+
+  .value {
+    font-size: 2rem;
+  }
+
+  .cards {
+    gap: 18px;
+  }
+}

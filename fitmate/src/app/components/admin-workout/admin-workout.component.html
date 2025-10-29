@@ -1,0 +1,126 @@
+<div class="workout-container">
+  <!-- Header -->
+  <div class="header">
+    <button class="add-btn" (click)="openAddWorkoutForm()">
+      + Add Workout
+    </button>
+    <button class="add-btn" (click)="openAddExerciseForm()">
+      + Add Exercise
+    </button>
+  </div>
+
+  <!-- Workout Form -->
+  <div *ngIf="showForm" class="form-container">
+    <h2>{{ isEditMode ? "Edit Workout" : "Add New Workout" }}</h2>
+
+    <form [formGroup]="workoutForm" (ngSubmit)="saveWorkout()">
+      <label>Name:</label>
+      <input formControlName="name" placeholder="Workout name" />
+
+      <label>Type:</label>
+      <input formControlName="type" placeholder="Workout type" />
+
+      <label>Duration (in mins):</label>
+      <input type="number" formControlName="duration" placeholder="Duration" />
+
+      <!-- Exercises Section -->
+      <div formArrayName="exercises">
+        <div
+          *ngFor="let ex of exercises.controls; let i = index"
+          [formGroupName]="i"
+          class="exercise-block"
+        >
+          <h4>Exercise {{ i + 1 }}</h4>
+
+          <label>Exercise Name:</label>
+          <select formControlName="name">
+            <option value="">Select Exercise</option>
+            <option *ngFor="let e of exerciseList" [value]="e">{{ e }}</option>
+          </select>
+
+          <label>Sets:</label>
+          <input formControlName="sets" placeholder="e.g. 3" />
+
+          <label>Reps:</label>
+          <input formControlName="reps" placeholder="e.g. 12" />
+
+          <label>Weight (kg):</label>
+          <input formControlName="weight" placeholder="e.g. 20" />
+
+          <button type="button" class="remove-btn" (click)="removeExercise(i)">
+            ✖ Remove
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="add-ex-btn" (click)="addExercise()">
+        + Add Exercise
+      </button>
+
+      <!-- Form Buttons -->
+      <div class="form-actions">
+        <button type="submit">{{ isEditMode ? "Update" : "Save" }}</button>
+        <button type="button" (click)="cancelForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Workouts List -->
+  <section class="workout-list" *ngIf="!showForm && !showExerciseForm">
+    <h2>All Workouts Added by Admin</h2>
+
+    <div *ngFor="let w of workouts; let i = index" class="workout-card">
+      <h3>{{ w.name }}</h3>
+      <p><strong>Type:</strong> {{ w.type }}</p>
+      <p><strong>Duration:</strong> {{ w.duration }} mins</p>
+
+      <h4>Exercises:</h4>
+      <ul>
+        <li *ngFor="let e of w.exercises">
+          {{ e.name }} - {{ e.sets }} sets × {{ e.reps }} reps &#64;
+          {{ e.weight }}
+          kg
+        </li>
+      </ul>
+
+      <div class="actions">
+        <button (click)="editWorkout(i)">Edit</button>
+        <button (click)="deleteWorkout(i)">Delete</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ADD EXERCISE FORM -->
+<div *ngIf="showExerciseForm" class="exercise-form">
+  <h3>{{ isExerciseEditMode ? "Edit Exercise" : "Add New Exercise" }}</h3>
+
+  <form [formGroup]="exerciseForm" (ngSubmit)="submitExercise()">
+    <label>Exercise Name:</label>
+    <input formControlName="name" placeholder="Enter exercise name" />
+
+    <label>Upload Image:</label>
+    <input type="file" (change)="onFileChange($event)" />
+
+    <div class="form-actions">
+      <button type="submit">
+        {{ isExerciseEditMode ? "Update" : "Submit" }}
+      </button>
+      <button type="button" (click)="cancelForm()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<!-- DISPLAY ALL EXERCISES -->
+<div class="exercise-gallery" *ngIf="!showForm">
+  <h3>Available Exercises</h3>
+  <div class="exercise-card" *ngFor="let ex of exercisesFromDB">
+    <img [src]="ex.imageUrl" alt="{{ ex.name }}" width="100" height="100" />
+    <p>{{ ex.name }}</p>
+
+    <div class="actions">
+      <button (click)="editExercise(ex)">Edit</button>
+      <button (click)="deleteExercise(ex.id)">Delete</button>
+    </div>
+  </div>
+</div>

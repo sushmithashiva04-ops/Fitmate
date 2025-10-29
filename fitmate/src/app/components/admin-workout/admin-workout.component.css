@@ -1,0 +1,284 @@
+/* 🏋️ Container Styling */
+.workout-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Poppins", sans-serif;
+}
+
+/* 🧭 Header */
+.header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.add-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.add-btn:hover {
+  background: #0056b3;
+}
+
+/* 🧾 Form Section */
+.form-container,
+.exercise-form {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.form-container h2,
+.exercise-form h3 {
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+/* Inputs & Labels */
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+  font-weight: 500;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
+/* Exercise Block */
+.exercise-block {
+  background: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.exercise-block h4 {
+  margin-bottom: 10px;
+  color: #007bff;
+}
+
+.remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  float: right;
+}
+
+.remove-btn:hover {
+  background: #b02a37;
+}
+
+/* Add Exercise Button */
+.add-ex-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.add-ex-btn:hover {
+  background: #1e7e34;
+}
+
+/* Form Actions */
+.form-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+.form-actions button[type="button"] {
+  background: #6c757d;
+}
+
+.form-actions button:hover {
+  opacity: 0.9;
+}
+
+/* 🗂 Workout List */
+.workout-list {
+  margin-top: 30px;
+}
+
+.workout-card {
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.workout-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.workout-card h3 {
+  margin-bottom: 8px;
+  color: #007bff;
+}
+
+.workout-card p {
+  margin: 3px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.workout-card ul {
+  margin: 8px 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.actions {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.actions button {
+  background: #007bff;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  margin-left: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.actions button:nth-child(2) {
+  background: #dc3545;
+}
+
+.actions button:hover {
+  opacity: 0.85;
+}
+
+/* 🏋️ Exercise Gallery */
+.exercise-gallery {
+  margin-top: 40px;
+}
+
+.exercise-gallery h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.exercise-card {
+  display: inline-block;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 10px;
+  text-align: center;
+  width: 160px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.exercise-card:hover {
+  transform: scale(1.03);
+}
+
+.exercise-card img {
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.exercise-card p {
+  margin-top: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.exercise-card .actions {
+  margin-top: 8px;
+}
+
+.exercise-card button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  margin: 0 3px;
+}
+
+.exercise-card button:nth-child(2) {
+  background: #dc3545;
+}
+
+.exercise-card button:hover {
+  opacity: 0.85;
+}
+
+/* 🧍 Responsive */
+@media (max-width: 768px) {
+  .workout-container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .exercise-card {
+    width: 100%;
+  }
+}

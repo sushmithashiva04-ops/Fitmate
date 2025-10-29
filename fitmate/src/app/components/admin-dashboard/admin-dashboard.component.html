@@ -1,0 +1,31 @@
+<div class="dashboard-container">
+  <h1>Admin Dashboard</h1>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading metrics...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!loading && !errorMessage" class="cards">
+    <!-- Card 1 -->
+    <div class="card total">
+      <h2>Total Workouts Added</h2>
+      <p class="value">{{ totalWorkouts }}</p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card scheduled">
+      <h2>Workouts Scheduled by Users</h2>
+      <p class="value">{{ scheduledWorkouts }}</p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card completion">
+      <h2>Completion Rate</h2>
+      <p class="value">{{ completionRate | number : "1.0-2" }}%</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+/* header.component.css */
+.app-header {
+  background-color: #121212; /* dark background */
+  color: #e0e0e0; /* light text for contrast */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #2a2a2a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-header .title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: #00bcd4; /* subtle accent to match footer hover */
+  text-transform: uppercase;
+}
+
+.app-header .title:hover {
+  color: #26c6da; /* slight glow effect */
+  transition: color 0.3s ease;
+}

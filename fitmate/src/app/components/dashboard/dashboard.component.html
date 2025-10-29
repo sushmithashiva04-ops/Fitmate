@@ -1,0 +1,63 @@
+<div class="dashboard-container">
+  <h2>🏋️‍♀️ Fitness Dashboard</h2>
+
+  <!-- Top Cards -->
+  <div class="card-grid">
+    <div class="card">
+      <h3>Total Calories</h3>
+      <p>{{ totalCalories }}</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Duration</h3>
+      <p>{{ totalDuration }} min</p>
+    </div>
+
+    <div class="card">
+      <h3>🔥 Streak</h3>
+      <p>{{ streak }} days</p>
+    </div>
+  </div>
+
+  <!-- Dynamic Workout Count Card -->
+  <div class="card dynamic-card">
+    <h3>Workouts Summary</h3>
+
+    <div class="status-buttons">
+      <button
+        [class.active]="selectedStatus === 'DONE'"
+        (click)="setSelectedStatus('DONE')"
+      >
+        Done
+      </button>
+      <button
+        [class.active]="selectedStatus === 'PENDING'"
+        (click)="setSelectedStatus('PENDING')"
+      >
+        Pending
+      </button>
+      <button
+        [class.active]="selectedStatus === 'SCHEDULED'"
+        (click)="setSelectedStatus('SCHEDULED')"
+      >
+        Scheduled
+      </button>
+    </div>
+
+    <p class="count-value">
+      {{ workoutCounts[selectedStatus] || 0 }}
+    </p>
+  </div>
+
+  <!-- Pie Chart -->
+  <div class="chart-container">
+    <h3>Workout Type Distribution</h3>
+    <canvas id="pieChart"></canvas>
+  </div>
+
+  <!-- Line Chart -->
+  <div class="chart-container">
+    <h3>Weekly Performance</h3>
+    <canvas id="lineChart"></canvas>
+  </div>
+</div>
