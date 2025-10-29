@@ -120,4 +120,4 @@ jobs:
             -e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
             -e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
             -e "dockerhub_password=${{secrets.DOCKERHUB_PASSWORD}}" \
-            -e "dockerhub_username=${{secrets.DOCKERHUB_USERNAME}}"
+            -e "dockerhub_username=${{secrets.DOCKERHUB_TOKEN}}"
