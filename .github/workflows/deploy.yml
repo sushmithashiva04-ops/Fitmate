@@ -25,8 +25,6 @@ jobs:
           PAT=$(aws secretsmanager get-secret-value --secret-id github/pat --query SecretString --output text | jq -r '.token')
           echo "PAT=$PAT" >> $GITHUB_ENV
 
-
-
       - name: Checkout infra repo
         uses: actions/checkout@v4
         with:
@@ -39,17 +37,25 @@ jobs:
 
       - name: Terraform Init & Apply
         working-directory: infra/terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-2
         run: |
-          terraform init
-          terraform apply -auto-approve
+          terraform init -input=false
+          terraform apply -auto-approve -input=false
 
       - name: Get EC2 Public IP
         id: ec2
         working-directory: infra/terraform
-        run: echo "EC2_IP=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
+        run: |
+          echo "EC2_IP=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
+          echo "Public IP: $EC2_IP"
 
       - name: Install Ansible
-        run: sudo apt-get update && sudo apt-get install -y ansible jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible jq
 
       - name: Run Ansible playbook
         env:
