@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --legacy-peer-deps
+RUN npm install -g @angular/cli && npm install --legacy-peer-deps
 
 # Copy the remaining source code
 COPY . .
