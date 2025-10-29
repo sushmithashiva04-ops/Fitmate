@@ -26,9 +26,7 @@ services:
   # ⚙️ Backend (Spring Boot)
   # ==========================
   backend:
-    build:
-      context: ./FitmateV1 # 👈 folder where your Spring Boot code lives
-      dockerfile: Dockerfile.backend
+    image: sush2003/fitmate-backend:latest  # 👈 your pushed backend image
     container_name: fitmate-backend
     ports:
       - "8080:8080"
@@ -42,7 +40,6 @@ services:
       SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
       SERVER_PORT: 8080
-      # 👇 Ensures Spring runs schema first, then data.sql
       SPRING_SQL_INIT_MODE: always
       SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
     depends_on:
@@ -60,12 +57,10 @@ services:
   # 🌐 Frontend (Angular + NGINX)
   # ==========================
   frontend:
-    build:
-      context: ./fitmate # 👈 folder where your Angular app lives
-      dockerfile: Dockerfile.frontend
+    image: sush2003/fitmate-frontend:latest  # 👈 your pushed frontend image
     container_name: fitmate-frontend
     ports:
-      - "8085:80" # Access frontend at http://localhost:8085
+      - "8085:80"  # Access frontend at http://<EC2-IP>:8085
     depends_on:
       - backend
     restart: unless-stopped
