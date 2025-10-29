@@ -1,0 +1,83 @@
+version: "3.8"
+
+services:
+  # ==========================
+  # 🗄️ MySQL Database
+  # ==========================
+  mysql:
+    image: mysql:8.0
+    container_name: fitmate-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: FitMateV1
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ==========================
+  # ⚙️ Backend (Spring Boot)
+  # ==========================
+  backend:
+    build:
+      context: ./FitmateV1 # 👈 folder where your Spring Boot code lives
+      dockerfile: Dockerfile.backend
+    container_name: fitmate-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: FitmateV1
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/FitMateV1?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SERVER_PORT: 8080
+      # 👇 Ensures Spring runs schema first, then data.sql
+      SPRING_SQL_INIT_MODE: always
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================
+  # 🌐 Frontend (Angular + NGINX)
+  # ==========================
+  frontend:
+    build:
+      context: ./fitmate # 👈 folder where your Angular app lives
+      dockerfile: Dockerfile.frontend
+    container_name: fitmate-frontend
+    ports:
+      - "8085:80" # Access frontend at http://localhost:8085
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+# ==========================
+# 🗂️ Volumes
+# ==========================
+volumes:
+  mysql_data:
