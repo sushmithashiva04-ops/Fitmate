@@ -12,26 +12,17 @@ jobs:
       - name: Checkout app repo
         uses: actions/checkout@v4
 
-      - name: Install Vault CLI
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Retrieve GitHub PAT from AWS Secrets Manager
+        id: get-pat
         run: |
-          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt-get update -y
-          sudo apt-get install vault -y
-
-
-      - name: Login to Vault
-        env:
-          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
-        run: vault login $VAULT_TOKEN
-
-      - name: Retrieve GitHub PAT from Vault
-        id: vault
-        env:
-          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-        run: |
-          PAT=$(vault kv get -field=token github/pat)
+          PAT=$(aws secretsmanager get-secret-value --secret-id github/pat --query SecretString --output text | jq -r '.token')
           echo "PAT=$PAT" >> $GITHUB_ENV
 
       - name: Checkout infra repo
@@ -40,13 +31,6 @@ jobs:
           repository: yourusername/infra-deployment
           token: ${{ env.PAT }}
           path: infra
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -63,7 +47,7 @@ jobs:
         run: echo "EC2_IP=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
 
       - name: Install Ansible
-        run: sudo apt-get update && sudo apt-get install -y ansible
+        run: sudo apt-get update && sudo apt-get install -y ansible jq
 
       - name: Run Ansible playbook
         env:
