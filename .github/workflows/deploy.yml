@@ -30,7 +30,7 @@ jobs:
       - name: Checkout infra repo
         uses: actions/checkout@v4
         with:
-          repository: yourusername/infra-deployment
+          repository: sushmithashiva04-ops/infra
           token: ${{ env.PAT }}
           path: infra
 
