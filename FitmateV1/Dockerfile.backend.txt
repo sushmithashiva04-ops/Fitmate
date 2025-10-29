@@ -1,0 +1,30 @@
+# ===============================
+# 🌱 Stage 1: Build the application
+# ===============================
+FROM maven:3.9.4-eclipse-temurin-21 AS build
+WORKDIR /app
+
+# Copy the Maven descriptor and download dependencies first (for caching)
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the entire project
+COPY src ./src
+
+# Build the JAR (skipping tests for faster builds)
+RUN mvn -B -DskipTests clean package
+
+# ===============================
+# 🚀 Stage 2: Create a lightweight runtime image
+# ===============================
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+# Copy only the built JAR file from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose your backend port (change if your backend uses another)
+EXPOSE 8080
+
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "app.jar"]
