@@ -27,10 +27,10 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           echo "🛠 Building Frontend..."
-          docker build -t $DOCKERHUB_USERNAME/fitmate-frontend:$IMAGE_TAG ./fitmate-frontend
+          docker build -t $DOCKERHUB_USERNAME/fitmate-frontend:$IMAGE_TAG ./fitmate
 
           echo "🛠 Building Backend..."
-          docker build -t $DOCKERHUB_USERNAME/fitmate-backend:$IMAGE_TAG ./fitmate-backend
+          docker build -t $DOCKERHUB_USERNAME/fitmate-backend:$IMAGE_TAG ./FitmateV1
 
           echo "🚀 Pushing images to Docker Hub..."
           docker push $DOCKERHUB_USERNAME/fitmate-frontend:$IMAGE_TAG
