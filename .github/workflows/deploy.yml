@@ -5,26 +5,45 @@ on:
     branches: [ main ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout application code
       - name: Checkout app repo
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      # 2️⃣ Login to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # 3️⃣ Build and push Docker images to Docker Hub
+      - name: Build and push Docker images
+        env:
+          IMAGE_TAG: latest
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          echo "🛠 Building Frontend..."
+          docker build -t $DOCKERHUB_USERNAME/fitmate-frontend:$IMAGE_TAG ./fitmate-frontend
+
+          echo "🛠 Building Backend..."
+          docker build -t $DOCKERHUB_USERNAME/fitmate-backend:$IMAGE_TAG ./fitmate-backend
+
+          echo "🚀 Pushing images to Docker Hub..."
+          docker push $DOCKERHUB_USERNAME/fitmate-frontend:$IMAGE_TAG
+          docker push $DOCKERHUB_USERNAME/fitmate-backend:$IMAGE_TAG
+
+      # 4️⃣ Retrieve GitHub PAT from AWS Secrets Manager
       - name: Retrieve GitHub PAT from AWS Secrets Manager
         id: secrets
         run: |
           PAT=$(aws secretsmanager get-secret-value --secret-id github/pat --query SecretString --output text | jq -r '.token')
           echo "PAT=$PAT" >> $GITHUB_ENV
 
+      # 5️⃣ Checkout infra repo (Terraform + Ansible)
       - name: Checkout infra repo
         uses: actions/checkout@v4
         with:
@@ -32,9 +51,11 @@ jobs:
           token: ${{ env.PAT }}
           path: infra
 
+      # 6️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # 7️⃣ Terraform Init & Apply
       - name: Terraform Init & Apply
         working-directory: infra/terraform
         env:
@@ -45,6 +66,7 @@ jobs:
           terraform init -input=false
           terraform apply -auto-approve -input=false
 
+      # 8️⃣ Get EC2 Public IP
       - name: Get EC2 Public IP
         id: ec2
         working-directory: infra/terraform
@@ -53,21 +75,22 @@ jobs:
           echo "EC2_IP=$EC2_IP" >> $GITHUB_ENV
           echo "✅ Public IP from Terraform: $EC2_IP"
 
+      # 9️⃣ Install Ansible
       - name: Install Ansible
         run: |
           sudo apt-get update
           sudo apt-get install -y ansible jq
 
+      # 🔟 Add EC2 host to known_hosts
       - name: Add EC2 host to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ env.EC2_IP }} >> ~/.ssh/known_hosts
-          cat ~/.ssh/known_hosts
 
+      # 1️⃣1️⃣ Run Ansible Playbook
       - name: Run Ansible playbook
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           EC2_IP: ${{ env.EC2_IP }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         working-directory: infra/ansible
@@ -80,5 +103,4 @@ jobs:
           echo "${EC2_IP} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/deploy-key.pem" >> inventory.ini
 
           ansible-playbook -i inventory.ini deploy.yml \
-            -e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
-            -e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}"
+            -e "dockerhub_username=${DOCKERHUB_USERNAME}"
