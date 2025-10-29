@@ -12,11 +12,28 @@ jobs:
       - name: Checkout app repo
         uses: actions/checkout@v4
 
+      - name: Install Vault CLI
+        run: sudo apt-get update && sudo apt-get install -y vault
+
+      - name: Login to Vault
+        env:
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+        run: vault login $VAULT_TOKEN
+
+      - name: Retrieve GitHub PAT from Vault
+        id: vault
+        env:
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+        run: |
+          PAT=$(vault kv get -field=token github/pat)
+          echo "PAT=$PAT" >> $GITHUB_ENV
+
       - name: Checkout infra repo
         uses: actions/checkout@v4
         with:
           repository: yourusername/infra-deployment
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ env.PAT }}
           path: infra
 
       - name: Configure AWS credentials
