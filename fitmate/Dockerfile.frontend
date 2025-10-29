@@ -28,7 +28,7 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy Angular build output to NGINX html directory
 # ⚠️ Update "frontend" to your Angular app name inside "dist" folder
-COPY --from=build /app/dist/<your-angular-app-name>/browser /usr/share/nginx/html
+COPY --from=build /app/dist/fitmate/browser /usr/share/nginx/html
 
 # Copy custom NGINX configuration (optional but recommended)
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
