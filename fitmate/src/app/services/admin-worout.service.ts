@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AdminWorkoutService {
-  private baseUrl = 'http://localhost:8080/api/admin/workout'; // ✅ backend base path
+  private baseUrl = '${environment.apiUrl}/admin/workout'; // ✅ backend base path
 
   constructor(private http: HttpClient) {}
 
