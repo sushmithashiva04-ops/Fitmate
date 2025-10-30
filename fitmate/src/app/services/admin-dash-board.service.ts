@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AdminDashboardService {
-  private apiUrl = 'http://localhost:8080/api/admin/metrics';
+  private apiUrl = '${environment.apiUrl}/api/admin/metrics';
 
   constructor(private http: HttpClient) {}
 
