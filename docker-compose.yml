@@ -8,9 +8,11 @@ services:
     image: mysql:8.0
     container_name: fitmate-mysql
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: FitMateV1
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3306:3306"
     volumes:
@@ -26,22 +28,19 @@ services:
   # ⚙️ Backend (Spring Boot)
   # ==========================
   backend:
-    image: sush2003/fitmate-backend:latest  # 👈 your pushed backend image
+    image: sush2003/fitmate-backend:latest
     container_name: fitmate-backend
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     environment:
       SPRING_APPLICATION_NAME: FitmateV1
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/FitMateV1?useSSL=false&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "true"
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-      SERVER_PORT: 8080
-      SPRING_SQL_INIT_MODE: always
-      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_ROOT_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SPRING_PROFILES_ACTIVE: prod
+      CORS_ALLOWED_ORIGINS: http://${PUBLIC_IP}:8085
     depends_on:
       mysql:
         condition: service_healthy
@@ -57,10 +56,12 @@ services:
   # 🌐 Frontend (Angular + NGINX)
   # ==========================
   frontend:
-    image: sush2003/fitmate-frontend:latest  # 👈 your pushed frontend image
+    image: sush2003/fitmate-frontend:latest
     container_name: fitmate-frontend
+    env_file:
+      - .env
     ports:
-      - "8085:80"  # Access frontend at http://<EC2-IP>:8085
+      - "8085:80"
     depends_on:
       - backend
     restart: unless-stopped
